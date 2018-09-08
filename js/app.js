@@ -1,5 +1,6 @@
-var Location = function() {
-
+var Location = function(data) {
+    this.title = ko.observable(data.title);
+    this.location = ko.observable(data.location);
 };
 
 var LocationsView = function() {

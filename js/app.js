@@ -4,6 +4,8 @@ var Location = function(data) {
 };
 
 var LocationsView = function() {
+    this.locationFilter = ko.observable();
+    this.locationList = ko.observableArray([]);
 
 };
 

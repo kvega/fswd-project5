@@ -16,8 +16,8 @@
             </div>
             <hr>
             <div>
-                <ul class="locations">
-                    <li></li>
+                <ul data-bind="foreach: locationList" class="locations">
+                    <li data-bind="text: title"></li>
                 </ul>
             </div>
         </div>

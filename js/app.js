@@ -24,11 +24,32 @@ var ViewModel = function() {
     });
 
     self.initMap = function() {
+        // Constructor for new map object
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 40.7413549, lng: -73.9980244},
-            zoom: 15, 
+            zoom: 14, 
             gestureHandling: 'cooperative'
         });
+
+        // Create an array of markers on the map
+        for (var i = 0; i < self.locationList().length; i++) {
+            var position = self.locationList()[i].location();
+            var title = self.locationList()[i].title();
+
+            // Create a marker for each location and put in array
+            var marker = new google.maps.Marker({
+                position: position,
+                title: title,
+                animation: google.maps.Animation.DROP,
+                id: i, 
+                map: map
+            });
+
+            // Push the marker onto the markers array
+            markers.push(marker);
+
+            // TODO: add eventListener for each marker
+        }
     };
 };
 

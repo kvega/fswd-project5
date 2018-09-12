@@ -11,7 +11,8 @@ var ViewModel = function() {
     self.initMap = function() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 36.970550, lng: -122.015760},
-            zoom: 15
+            zoom: 15, 
+            gestureHandling: 'cooperative'
         });
     };
 };

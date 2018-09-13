@@ -12,11 +12,11 @@
         <div id="selection" class="locations-view">
             <h1>Locations List</h1>
             <div>
-                <input id="location-filter" type="text" placeholder="Location filter">
+                <input id="location-filter" type="text" placeholder="Location filter" data-bind="value: filter, valueUpdate: 'afterkeydown'">
             </div>
             <hr>
             <div>
-                <ul data-bind="foreach: locationList" class="locations">
+                <ul data-bind="foreach: filterLocations" class="locations">
                     <li data-bind="text: title"></li>
                 </ul>
             </div>

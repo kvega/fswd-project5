@@ -17,6 +17,7 @@ var initialLocations = [
 var ViewModel = function() {
     var self = this;
 
+    self.filter = ko.observable();
     self.locationList = ko.observableArray([]);
 
     initialLocations.forEach(function(locationData) {
@@ -51,6 +52,21 @@ var ViewModel = function() {
             // TODO: add eventListener for each marker
         }
     };
+
+    self.filterLocations = ko.computed(function() {
+        var filter = self.filter();
+        var filteredList = [];
+        if (filter) {
+            ko.utils.arrayForEach(self.locationList(), function(location) {
+                if (String(location.title()).toLowerCase().includes(String(filter).toLowerCase())) {
+                    filteredList.push(location)
+                }
+            });
+        } else {
+            filteredList = self.locationList();
+        }
+        return filteredList;
+    })
 };
 
 function initApp() {

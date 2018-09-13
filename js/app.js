@@ -1,7 +1,7 @@
 // Define global variables
 // Map variable
 var map;
-var markers = [];
+var markers = ko.observableArray([]);
 var polygon;
 
 var initialLocations = [
@@ -62,9 +62,20 @@ var ViewModel = function() {
                     filteredList.push(location)
                 }
             });
+
+            ko.utils.arrayForEach(markers(), function(marker) {
+                if (String(marker.title).toLowerCase().includes(String(filter).toLowerCase())) {
+                    marker.setMap(map);
+                } else {
+                    marker.setMap(null);
+                }
+            });
         } else {
             filteredList = self.locationList();
-        }
+            ko.utils.arrayForEach(markers(), function(marker) {
+                marker.setMap(map);
+            });
+        };
         return filteredList;
     })
 };

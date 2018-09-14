@@ -32,6 +32,8 @@ var ViewModel = function() {
             gestureHandling: 'cooperative'
         });
 
+        var largeInfowindow = new google.maps.InfoWindow();
+
         // Create an array of markers on the map
         for (var i = 0; i < self.locationList().length; i++) {
             var position = self.locationList()[i].location();
@@ -50,7 +52,11 @@ var ViewModel = function() {
             markers.push(marker);
 
             // TODO: add eventListener for each marker
-        }
+            marker.addListener('click', function() {
+                console.log(this);
+                self.populateInfoWindow(this, largeInfowindow);
+            });
+        };
     };
 
     self.filterLocations = ko.computed(function() {
@@ -77,7 +83,26 @@ var ViewModel = function() {
             });
         };
         return filteredList;
-    })
+    });
+
+    self.populateInfoWindow = function(marker, infowindow) {
+        console.log('hello');
+        console.log(marker);
+        console.log('');
+        console.log(infowindow);
+        console.log(infowindow.marker);
+        if (infowindow.marker != marker) {
+            infowindow.setContent('');
+            infowindow.marker = marker;
+            // Clear marker property if the infowindow is closed
+            infowindow.addListener('closeclick', function() {
+                infowindow.marker = null;
+            });
+            infowindow.setContent('<div>' + marker.title + '</div>' +
+            '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
+            infowindow.open(map, marker);
+        }
+    };
 };
 
 function initApp() {

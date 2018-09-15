@@ -36,6 +36,7 @@ var ViewModel = function() {
         for (var i = 0; i < self.locationList().length; i++) {
             var location = self.locationList()[i];
             var marker = location.marker;
+            marker.setIcon(defaultMarker);
             marker.setMap(map);
 
             marker.infowindow = new google.maps.InfoWindow();
@@ -48,7 +49,6 @@ var ViewModel = function() {
             // TODO: add eventListener for each marker
             marker.addListener('click', function() {
                 this.infowindow.open(map, this);
-                toggleBounce(this);
             });
 
             
@@ -83,7 +83,6 @@ var ViewModel = function() {
             // Clear marker property if the infowindow is closed
             infowindow.addListener('closeclick', function() {
                 infowindow.marker = null;
-                toggleBounce(marker);
             });
             infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
@@ -91,12 +90,12 @@ var ViewModel = function() {
     };
 
     self.openLocationInfo = function(location) {
-        location.marker.infowindow.open(map, location.marker);
+        location.marker.setIcon(makeMarkerIcon('00FF24'))
         toggleBounce(location.marker);
     }
 
     self.closeLocationInfo = function(location) {
-        location.marker.infowindow.close();
+        location.marker.setIcon(makeMarkerIcon('ea4335'))
         toggleBounce(location.marker);
     }
     
@@ -107,6 +106,22 @@ var ViewModel = function() {
             marker.setAnimation(google.maps.Animation.BOUNCE);
         }
     }
+
+    function makeMarkerIcon(markerColor) {
+        var googleChartsURL = 'http://chart.googleapis.com/chart?';
+        var pinType = 'chst=d_map_pin_icon&';
+        var chld = 'chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2';
+        var markerImage = new google.maps.MarkerImage(
+            'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor + '|40|_|%E2%80%A2',
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0, 0),
+            new google.maps.Point(10, 34),
+            new google.maps.Size(21,34));
+        return markerImage;
+    }
+
+    var defaultMarker = makeMarkerIcon('ea4335');
+    var highlightedMarker = makeMarkerIcon('00FF24')
 };
 
 function initApp() {

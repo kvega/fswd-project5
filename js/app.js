@@ -51,6 +51,14 @@ var ViewModel = function() {
                 this.infowindow.open(map, this);
             });
 
+            marker.addListener('mouseover', function() {
+                this.setIcon(highlightedMarker);
+            });
+
+            marker.addListener('mouseout', function() {
+                this.setIcon(defaultMarker);
+            });
+
             
         };
     };

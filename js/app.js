@@ -48,6 +48,7 @@ var ViewModel = function() {
             // TODO: add eventListener for each marker
             marker.addListener('click', function() {
                 this.infowindow.open(map, this);
+                toggleBounce(this);
             });
 
             
@@ -82,6 +83,7 @@ var ViewModel = function() {
             // Clear marker property if the infowindow is closed
             infowindow.addListener('closeclick', function() {
                 infowindow.marker = null;
+                toggleBounce(marker);
             });
             infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
@@ -90,10 +92,20 @@ var ViewModel = function() {
 
     self.openLocationInfo = function(location) {
         location.marker.infowindow.open(map, location.marker);
+        toggleBounce(location.marker);
     }
 
     self.closeLocationInfo = function(location) {
         location.marker.infowindow.close();
+        toggleBounce(location.marker);
+    }
+    
+    function toggleBounce(marker) {
+        if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+        } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
     }
 };
 

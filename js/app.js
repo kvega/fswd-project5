@@ -20,8 +20,8 @@ var ViewModel = function() {
     self.filter = ko.observable();
     self.locationList = ko.observableArray([]);
 
-    initialLocations.forEach(function(locationData) {
-        self.locationList.push(new Location(locationData));
+    initialLocations.forEach(function(locationData, i) {
+        self.locationList.push(new Location(locationData, i));
     });
 
     self.initMap = function() {
@@ -32,30 +32,25 @@ var ViewModel = function() {
             gestureHandling: 'cooperative'
         });
 
-        var largeInfowindow = new google.maps.InfoWindow();
-
         // Create an array of markers on the map
         for (var i = 0; i < self.locationList().length; i++) {
-            var position = self.locationList()[i].location();
-            var title = self.locationList()[i].title();
+            var location = self.locationList()[i];
+            var marker = location.marker;
+            marker.setMap(map);
 
-            // Create a marker for each location and put in array
-            var marker = new google.maps.Marker({
-                position: position,
-                title: title,
-                animation: google.maps.Animation.DROP,
-                id: i, 
-                map: map
-            });
+            marker.infowindow = new google.maps.InfoWindow();
+
+            self.populateInfoWindow(marker, marker.infowindow);
 
             // Push the marker onto the markers array
             markers.push(marker);
 
             // TODO: add eventListener for each marker
             marker.addListener('click', function() {
-                console.log(this);
-                self.populateInfoWindow(this, largeInfowindow);
+                this.infowindow.open(map, this);
             });
+
+            
         };
     };
 
@@ -65,32 +60,22 @@ var ViewModel = function() {
         if (filter) {
             ko.utils.arrayForEach(self.locationList(), function(location) {
                 if (String(location.title()).toLowerCase().includes(String(filter).toLowerCase())) {
-                    filteredList.push(location)
-                }
-            });
-
-            ko.utils.arrayForEach(markers(), function(marker) {
-                if (String(marker.title).toLowerCase().includes(String(filter).toLowerCase())) {
-                    marker.setMap(map);
+                    filteredList.push(location);
+                    location.marker.setMap(map);
                 } else {
-                    marker.setMap(null);
+                    location.marker.setMap(null);
                 }
             });
         } else {
             filteredList = self.locationList();
-            ko.utils.arrayForEach(markers(), function(marker) {
-                marker.setMap(map);
+            ko.utils.arrayForEach(filteredList, function(location) {
+                location.marker.setMap(map);
             });
         };
         return filteredList;
     });
 
     self.populateInfoWindow = function(marker, infowindow) {
-        console.log('hello');
-        console.log(marker);
-        console.log('');
-        console.log(infowindow);
-        console.log(infowindow.marker);
         if (infowindow.marker != marker) {
             infowindow.setContent('');
             infowindow.marker = marker;
@@ -100,9 +85,16 @@ var ViewModel = function() {
             });
             infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
-            infowindow.open(map, marker);
         }
     };
+
+    self.openLocationInfo = function(location) {
+        location.marker.infowindow.open(map, location.marker);
+    }
+
+    self.closeLocationInfo = function(location) {
+        location.marker.infowindow.close();
+    }
 };
 
 function initApp() {

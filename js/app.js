@@ -97,12 +97,16 @@ var ViewModel = function() {
         }
     };
 
-    self.openLocationInfo = function(location) {
+    self.clickLocationInfo = function(location) {
+        location.marker.infowindow.open(map, location.marker);
+    }
+
+    self.mouseoverLocationInfo = function(location) {
         location.marker.setIcon(makeMarkerIcon('00FF24'))
         toggleBounce(location.marker);
     }
 
-    self.closeLocationInfo = function(location) {
+    self.mouseoutLocationInfo = function(location) {
         location.marker.setIcon(makeMarkerIcon('ea4335'))
         toggleBounce(location.marker);
     }

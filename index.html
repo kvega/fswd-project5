@@ -17,7 +17,7 @@
             <hr>
             <div>
                 <ul data-bind="foreach: filterLocations" class="locations">
-                    <li data-bind="text: title, event: {mouseover: $parent.openLocationInfo, mouseout: $parent.closeLocationInfo}"></li>
+                    <li data-bind="text: title, click: $parent.clickLocationInfo, event: {mouseover: $parent.mouseoverLocationInfo, mouseout: $parent.mouseoutLocationInfo}"></li>
                 </ul>
             </div>
         </div>

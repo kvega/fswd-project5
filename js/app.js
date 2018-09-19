@@ -2,6 +2,8 @@
 // Map variable
 var map;
 var markers = ko.observableArray([]);
+var mainLocationSC = {lat: 36.9741, lng: -122.0308};
+var mainLocationNY = {lat: 40.7413549, lng: -73.9980244};
 const CLIENT_ID = 'LT2XDVYLCLY13G0O1CPIJ5YEJXGG1YHV0LISYQZIGKZYZUN0';
 const CLIENT_SECRET = 'HC11QNZJOTN4CZRIT30VHGKE30VE4BVMW03TGRYZ4L0N5MMN';
 
@@ -28,7 +30,7 @@ var ViewModel = function() {
     self.initMap = function() {
         // Constructor for new map object
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 40.7413549, lng: -73.9980244}, //{lat: 36.9741, lng: -122.0308},
+            center: mainLocationSC,
             zoom: 14, 
             gestureHandling: 'cooperative'
         });
@@ -149,7 +151,7 @@ function getFoursquareInfo(location) {
     $.getJSON('https://api.foursquare.com/v2/venues/explore', {
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
-        near: location,
+        ll: String(location.lat) + ', ' + String(location.lng),
         v: '20180323', 
         limit: 30
     }, function(result) {
@@ -174,5 +176,5 @@ function getFoursquareInfo(location) {
 }
 
 function initApp() {
-    getFoursquareInfo('New York, NY');
+    getFoursquareInfo(mainLocationSC);
 };

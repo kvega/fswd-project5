@@ -95,7 +95,6 @@ var ViewModel = function() {
             });
             infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
-            getFoursquareInfo(marker);
         }
     };
 
@@ -134,14 +133,15 @@ var ViewModel = function() {
         return markerImage;
     }
 
-    function getFoursquareInfo(marker) {
+    function getFoursquareInfo(location) {
         $.ajax({
-            url: 'https://api.foursquare.com/v2/venues/explore',
+            url: 'https://api.foursquare.com/v2/venues/search',
             data: {
                 client_id: CLIENT_ID,
                 client_secret: CLIENT_SECRET,
-                ll: marker.position.lat() + ', ' + marker.position.lng(),
-                v: '20180323'
+                near: location,
+                v: '20180323',
+                limit: 10
             },
             success: function(data) {
                 console.log(data)
@@ -152,6 +152,8 @@ var ViewModel = function() {
 
     var defaultMarker = makeMarkerIcon('ea4335');
     var highlightedMarker = makeMarkerIcon('00FF24')
+
+    getFoursquareInfo('Santa Cruz, CA')
 };
 
 function initApp() {

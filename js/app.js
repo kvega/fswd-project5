@@ -72,7 +72,7 @@ var ViewModel = function() {
             var infowindow = new google.maps.InfoWindow();
             marker.infowindow = infowindow;
 
-            self.populateInfoWindow(marker, infowindow);
+            populateInfoWindow(marker, infowindow);
 
             // Push the marker onto the markers array
             self.markers.push(marker);
@@ -92,19 +92,6 @@ var ViewModel = function() {
                 this.setIcon(self.defaultMarker);
             });
         };
-    };
-
-    self.populateInfoWindow = function(marker, infowindow) {
-        if (infowindow.marker != marker) {
-            infowindow.setContent('');
-            infowindow.marker = marker;
-            // Clear marker property if the infowindow is closed
-            infowindow.addListener('closeclick', function() {
-                infowindow.marker = null;
-            });
-            infowindow.setContent('<div><h1>' + marker.title + '</h1></div><br>' +
-            '<div>' + marker.address + '</div><br>');
-        }
     };
 
     self.clickLocationInfo = function(location) {
@@ -146,6 +133,19 @@ function makeMarkerIcon(markerColor) {
         new google.maps.Point(10, 34),
         new google.maps.Size(21,34));
     return markerImage;
+};
+
+function populateInfoWindow(marker, infowindow) {
+    if (infowindow.marker != marker) {
+        infowindow.setContent('');
+        infowindow.marker = marker;
+        // Clear marker property if the infowindow is closed
+        infowindow.addListener('closeclick', function() {
+            infowindow.marker = null;
+        });
+        infowindow.setContent('<div><h1>' + marker.title + '</h1></div><br>' +
+        '<div>' + marker.address + '</div><br>');
+    }
 };
 
 function getFoursquareInfo(location) {

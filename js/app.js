@@ -5,14 +5,7 @@ var markers = ko.observableArray([]);
 const CLIENT_ID = 'LT2XDVYLCLY13G0O1CPIJ5YEJXGG1YHV0LISYQZIGKZYZUN0';
 const CLIENT_SECRET = 'HC11QNZJOTN4CZRIT30VHGKE30VE4BVMW03TGRYZ4L0N5MMN';
 
-var initialLocations = [
-    {title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
-    {title: 'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
-    {title: 'Union Square Open Floor Plan', location: {lat: 40.7347062, lng: -73.9895759}},
-    {title: 'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
-    {title: 'TriBeCa Artsy Bachelor Pad', location: {lat: 40.7195264, lng: -74.0089934}},
-    {title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
-  ];
+var initialLocations = [];
 
 // Create our ViewModel
 var ViewModel = function() {
@@ -21,14 +14,21 @@ var ViewModel = function() {
     self.filter = ko.observable();
     self.locationList = ko.observableArray([]);
 
-    initialLocations.forEach(function(locationData, i) {
-        self.locationList.push(new Location(locationData, i));
+    
+    console.log("Initial Locations:\n");
+    console.log(initialLocations);
+
+    initialLocations.forEach(function(locationData) {
+        self.locationList.push(new Location(locationData));
+        console.log("location success")
     });
+
+    console.log(self.locationList());
 
     self.initMap = function() {
         // Constructor for new map object
         map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 40.7413549, lng: -73.9980244},
+            center: {lat: 40.7413549, lng: -73.9980244}, //{lat: 36.9741, lng: -122.0308},
             zoom: 14, 
             gestureHandling: 'cooperative'
         });
@@ -36,9 +36,15 @@ var ViewModel = function() {
         // Create an array of markers on the map
         for (var i = 0; i < self.locationList().length; i++) {
             var location = self.locationList()[i];
-            var marker = location.marker;
+            console.log("Creating marker")
+            var marker = new google.maps.Marker({
+                position: location.location(),
+                title: location.title(),
+                animation: google.maps.Animation.DROP, 
+                map: map
+            });
+            location.marker = marker;
             marker.setIcon(defaultMarker);
-            marker.setMap(map);
 
             marker.infowindow = new google.maps.InfoWindow();
 
@@ -133,31 +139,40 @@ var ViewModel = function() {
         return markerImage;
     }
 
-    function getFoursquareInfo(location) {
-        $.ajax({
-            url: 'https://api.foursquare.com/v2/venues/search',
-            data: {
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET,
-                near: location,
-                v: '20180323',
-                limit: 10
-            },
-            success: function(data) {
-                console.log(data)
-            },
-            dataType: 'json'
-        })
-    }
-
     var defaultMarker = makeMarkerIcon('ea4335');
     var highlightedMarker = makeMarkerIcon('00FF24')
-
-    getFoursquareInfo('Santa Cruz, CA')
 };
 
+
+function getFoursquareInfo(location) {
+    var array = [];
+    $.getJSON('https://api.foursquare.com/v2/venues/explore', {
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        near: location,
+        v: '20180323', 
+        limit: 20
+    }, function(result) {
+        console.log(result);
+    }).done(function(result) {
+        $.each(result.response.groups[0].items, function(i, item) {
+            array.push({
+                title: item.venue.name,
+                location: {
+                    lat: item.venue.location.lat,
+                    lng: item.venue.location.lng
+                },
+                address: item.venue.location.formattedAddress.join(', '),
+                categories: item.venue.categories
+            });
+        });
+        initialLocations = array;
+        var vm = new ViewModel();
+        vm.initMap();
+        ko.applyBindings(vm);
+    })
+}
+
 function initApp() {
-    var vm = new ViewModel();
-    vm.initMap();
-    ko.applyBindings(vm);
+    getFoursquareInfo('New York, NY');
 };

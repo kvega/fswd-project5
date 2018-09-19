@@ -2,7 +2,8 @@
 // Map variable
 var map;
 var markers = ko.observableArray([]);
-var polygon;
+const CLIENT_ID = 'LT2XDVYLCLY13G0O1CPIJ5YEJXGG1YHV0LISYQZIGKZYZUN0';
+const CLIENT_SECRET = 'HC11QNZJOTN4CZRIT30VHGKE30VE4BVMW03TGRYZ4L0N5MMN';
 
 var initialLocations = [
     {title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
@@ -94,6 +95,7 @@ var ViewModel = function() {
             });
             infowindow.setContent('<div>' + marker.title + '</div>' +
             '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
+            getFoursquareInfo(marker);
         }
     };
 
@@ -130,6 +132,22 @@ var ViewModel = function() {
             new google.maps.Point(10, 34),
             new google.maps.Size(21,34));
         return markerImage;
+    }
+
+    function getFoursquareInfo(marker) {
+        $.ajax({
+            url: 'https://api.foursquare.com/v2/venues/explore',
+            data: {
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                ll: marker.position.lat() + ', ' + marker.position.lng(),
+                v: '20180323'
+            },
+            success: function(data) {
+                console.log(data)
+            },
+            dataType: 'json'
+        })
     }
 
     var defaultMarker = makeMarkerIcon('ea4335');

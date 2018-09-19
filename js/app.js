@@ -1,7 +1,7 @@
 // Define global variables
 // Map variable
 var map;
-var markers = ko.observableArray([]);
+var markers = [];
 var mainLocationSC = {lat: 36.9741, lng: -122.0308};
 var mainLocationNY = {lat: 40.7413549, lng: -73.9980244};
 var infowindow;
@@ -21,8 +21,8 @@ var ViewModel = function() {
     console.log("Initial Locations:\n");
     console.log(initialLocations);
 
-    initialLocations.forEach(function(locationData) {
-        self.locationList.push(new Location(locationData));
+    initialLocations.forEach(function(locationData, i) {
+        self.locationList.push(new Location(locationData, i));
         console.log("location success")
     });
 
@@ -32,7 +32,7 @@ var ViewModel = function() {
         // Constructor for new map object
         map = new google.maps.Map(document.getElementById('map'), {
             center: mainLocationSC,
-            zoom: 14, 
+            zoom: 16, 
             gestureHandling: 'cooperative'
         });
 
@@ -46,7 +46,7 @@ var ViewModel = function() {
                 animation: google.maps.Animation.DROP, 
                 map: map
             });
-            location.marker = marker;
+
             marker.setIcon(defaultMarker);
 
             infowindow = new google.maps.InfoWindow();
@@ -71,6 +71,8 @@ var ViewModel = function() {
 
             
         };
+        console.log("Markers");
+        console.log(markers);
     };
 
     self.filterLocations = ko.computed(function() {
@@ -80,15 +82,17 @@ var ViewModel = function() {
             ko.utils.arrayForEach(self.locationList(), function(location) {
                 if (String(location.title()).toLowerCase().includes(String(filter).toLowerCase()) || location.categories().includes(String(filter).toLowerCase())) {
                     filteredList.push(location);
-                    location.marker.setMap(map);
+                    markers[location.id].setMap(map);
                 } else {
-                    location.marker.setMap(null);
+                    markers[location.id].setMap(null);
                 }
             });
         } else {
             filteredList = self.locationList();
             ko.utils.arrayForEach(filteredList, function(location) {
-                location.marker.setMap(map);
+                if (markers.length > 0) {
+                    markers[location.id].setMap(map);
+                }
             });
         };
         return filteredList;
@@ -108,17 +112,19 @@ var ViewModel = function() {
     };
 
     self.clickLocationInfo = function(location) {
-        infowindow.open(map, location.marker);
+        infowindow.open(map, markers[location.id]);
     }
 
     self.mouseoverLocationInfo = function(location) {
-        location.marker.setIcon(makeMarkerIcon('00FF24'))
-        toggleBounce(location.marker);
+        var marker = markers[location.id];
+        marker.setIcon(makeMarkerIcon('00FF24'))
+        toggleBounce(marker);
     }
 
     self.mouseoutLocationInfo = function(location) {
-        location.marker.setIcon(makeMarkerIcon('ea4335'))
-        toggleBounce(location.marker);
+        var marker = markers[location.id];
+        marker.setIcon(makeMarkerIcon('ea4335'))
+        toggleBounce(marker);
     }
     
     function toggleBounce(marker) {

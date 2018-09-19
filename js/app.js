@@ -148,6 +148,10 @@ function populateInfoWindow(marker, infowindow) {
     }
 };
 
+function googleMapsError() {
+    alert("Uh oh! Looks like we encountered an error opening Google Maps. Please refresh the page and try again.");
+}
+
 function getFoursquareInfo(location) {
     var array = [];
     $.getJSON('https://api.foursquare.com/v2/venues/explore', {

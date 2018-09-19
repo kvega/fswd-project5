@@ -75,7 +75,7 @@ var ViewModel = function() {
         var filteredList = [];
         if (filter) {
             ko.utils.arrayForEach(self.locationList(), function(location) {
-                if (String(location.title()).toLowerCase().includes(String(filter).toLowerCase())) {
+                if (String(location.title()).toLowerCase().includes(String(filter).toLowerCase()) || location.categories().includes(String(filter).toLowerCase())) {
                     filteredList.push(location);
                     location.marker.setMap(map);
                 } else {
@@ -151,7 +151,7 @@ function getFoursquareInfo(location) {
         client_secret: CLIENT_SECRET,
         near: location,
         v: '20180323', 
-        limit: 20
+        limit: 30
     }, function(result) {
         console.log(result);
     }).done(function(result) {
@@ -163,7 +163,7 @@ function getFoursquareInfo(location) {
                     lng: item.venue.location.lng
                 },
                 address: item.venue.location.formattedAddress.join(', '),
-                categories: item.venue.categories
+                categories: String(item.venue.categories[0].name).toLowerCase()
             });
         });
         initialLocations = array;

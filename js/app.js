@@ -175,7 +175,11 @@ function getFoursquareInfo(location) {
         var vm = new ViewModel();
         vm.initMap();
         ko.applyBindings(vm);
-    });
+    }).fail(function() {
+        alert("Oh no! Something went wrong! Please refresh the page and try again.");
+    }).always(function() {
+        console.log("complete");
+    })
 };
 
 function initApp() {

@@ -4,7 +4,7 @@ var map;
 var markers = [];
 var mainLocationSC = {lat: 36.9741, lng: -122.0308};
 var mainLocationNY = {lat: 40.7413549, lng: -73.9980244};
-var infowindow;
+var mainInfoWindow;
 const CLIENT_ID = 'LT2XDVYLCLY13G0O1CPIJ5YEJXGG1YHV0LISYQZIGKZYZUN0';
 const CLIENT_SECRET = 'HC11QNZJOTN4CZRIT30VHGKE30VE4BVMW03TGRYZ4L0N5MMN';
 
@@ -17,16 +17,9 @@ var ViewModel = function() {
     self.filter = ko.observable();
     self.locationList = ko.observableArray([]);
 
-    
-    console.log("Initial Locations:\n");
-    console.log(initialLocations);
-
     initialLocations.forEach(function(locationData, i) {
         self.locationList.push(new Location(locationData, i));
-        console.log("location success")
     });
-
-    console.log(self.locationList());
 
     self.initMap = function() {
         // Constructor for new map object
@@ -44,12 +37,16 @@ var ViewModel = function() {
                 position: location.location(),
                 title: location.title(),
                 animation: google.maps.Animation.DROP, 
-                map: map
+                map: map,
+                address: location.address()
             });
 
-            marker.setIcon(defaultMarker);
+            console.log(marker);
 
-            infowindow = new google.maps.InfoWindow();
+            marker.setIcon(defaultMarker);
+            mainInfoWindow = new google.maps.InfoWindow();
+            var infowindow = new google.maps.InfoWindow();
+            marker.infowindow = infowindow;
 
             self.populateInfoWindow(marker, infowindow);
 
@@ -58,7 +55,9 @@ var ViewModel = function() {
 
             // TODO: add eventListener for each marker
             marker.addListener('click', function() {
-                infowindow.open(map, this);
+                mainInfoWindow.close();
+                mainInfoWindow = this.infowindow;
+                mainInfoWindow.open(map, this);
             });
 
             marker.addListener('mouseover', function() {
@@ -68,11 +67,7 @@ var ViewModel = function() {
             marker.addListener('mouseout', function() {
                 this.setIcon(defaultMarker);
             });
-
-            
         };
-        console.log("Markers");
-        console.log(markers);
     };
 
     self.filterLocations = ko.computed(function() {
@@ -106,13 +101,16 @@ var ViewModel = function() {
             infowindow.addListener('closeclick', function() {
                 infowindow.marker = null;
             });
-            infowindow.setContent('<div>' + marker.title + '</div>' +
-            '<div>' + marker.position.lat() + ', ' +  marker.position.lng() + '</div>');
+            infowindow.setContent('<div><h1>' + marker.title + '</h1></div><br>' +
+            '<div>' + marker.address + '</div><br>');
         }
     };
 
     self.clickLocationInfo = function(location) {
-        infowindow.open(map, markers[location.id]);
+        var marker = markers[location.id];
+        mainInfoWindow.close();
+        mainInfoWindow = marker.infowindow;
+        mainInfoWindow.open(map, marker);
     }
 
     self.mouseoverLocationInfo = function(location) {
@@ -160,7 +158,7 @@ function getFoursquareInfo(location) {
         client_secret: CLIENT_SECRET,
         ll: String(location.lat) + ', ' + String(location.lng),
         v: '20180323', 
-        limit: 30
+        limit: 50
     }, function(result) {
         console.log(result);
     }).done(function(result) {

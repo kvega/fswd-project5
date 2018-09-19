@@ -4,6 +4,7 @@ var map;
 var markers = ko.observableArray([]);
 var mainLocationSC = {lat: 36.9741, lng: -122.0308};
 var mainLocationNY = {lat: 40.7413549, lng: -73.9980244};
+var infowindow;
 const CLIENT_ID = 'LT2XDVYLCLY13G0O1CPIJ5YEJXGG1YHV0LISYQZIGKZYZUN0';
 const CLIENT_SECRET = 'HC11QNZJOTN4CZRIT30VHGKE30VE4BVMW03TGRYZ4L0N5MMN';
 
@@ -48,16 +49,16 @@ var ViewModel = function() {
             location.marker = marker;
             marker.setIcon(defaultMarker);
 
-            marker.infowindow = new google.maps.InfoWindow();
+            infowindow = new google.maps.InfoWindow();
 
-            self.populateInfoWindow(marker, marker.infowindow);
+            self.populateInfoWindow(marker, infowindow);
 
             // Push the marker onto the markers array
             markers.push(marker);
 
             // TODO: add eventListener for each marker
             marker.addListener('click', function() {
-                this.infowindow.open(map, this);
+                infowindow.open(map, this);
             });
 
             marker.addListener('mouseover', function() {
@@ -107,7 +108,7 @@ var ViewModel = function() {
     };
 
     self.clickLocationInfo = function(location) {
-        location.marker.infowindow.open(map, location.marker);
+        infowindow.open(map, location.marker);
     }
 
     self.mouseoverLocationInfo = function(location) {

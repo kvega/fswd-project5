@@ -9,11 +9,14 @@
 html,
 body {
     height: 100vh;
+}
+
+body {
     overflow: hidden;
 }
 
 #map {
-    height: 100vh;
+    height: 95vh;
     min-height: 100%;
     position: relative;
     overflow: hidden;

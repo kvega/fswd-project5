@@ -8,38 +8,46 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/css/master.css">
     <title>Neighborhood Map</title>
 </head>
 
 <body>
     <div class="container-fluid p-0 m-0 h-100">
+        <nav id="sidebar" data-bind="style: {left: isSidebarOpen() ? '-500px' : '0px'}">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <button class="navbar-toggler" type="button"  data-bind="click: toggleSidebar"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" style="display: block">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand mr-auto px-3" href="#">Neighborhood App</a>
+            </nav>
+            <div class="input-group">
+                <input id="location-filter" type="text" class="form-control" placeholder="Location Name, Category"
+                    aria-label="Location Name, Category" aria-describedby="basic-addon2" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="material-icons">filter_list</i></span>
+                </div>
+            </div>
+            <hr>
+            <div class="location-list">
+                <ul class="list-group" data-bind="foreach: filterLocations">
+                    <li class="list-group-item" data-bind="text: title, click: $parent.clickLocationInfo, event: {mouseover: $parent.mouseoverLocationInfo, mouseout: $parent.mouseoutLocationInfo}"></li>
+                </ul>
+            </div>
+        </nav>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebar"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" style="display: block">
+            <button class="navbar-toggler" type="button"  data-bind="click: toggleSidebar" aria-controls="navbarNavAltMarkup"
+                aria-expanded="false" aria-label="Toggle navigation" style="display: block">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <a class="navbar-brand mr-auto px-3" href="#">Neighborhood App</a>
         </nav>
-        <main class="container-fluid m-0 p-0">
+        <main class="container-fluid my-0 p-0">
             <div id="map"></div>
         </main>
     </div>
-    <!-- <div class="wrapper">
-        <div id="selection" class="locations-view">
-            <h1>Locations List</h1>
-            <div>
-                <input id="location-filter" type="text" placeholder="Location filter" data-bind="value: filter, valueUpdate: 'afterkeydown'">
-            </div>
-            <hr>
-            <div class="location-list">
-                <ul data-bind="foreach: filterLocations" class="locations">
-                    <li data-bind="text: title, click: $parent.clickLocationInfo, event: {mouseover: $parent.mouseoverLocationInfo, mouseout: $parent.mouseoutLocationInfo}"></li>
-                </ul>
-            </div>
-        </div>
-        <div id="map" class="map-view" style="overflow:hidden"></div>
-    </div> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"

@@ -17,19 +17,23 @@
     <div class="container-fluid p-0 m-0 h-100">
         <nav id="sidebar" data-bind="style: {left: isSidebarOpen() ? '-500px' : '0px'}">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <button class="navbar-toggler" type="button" data-bind="click: toggleSidebar" aria-controls="navbarNavAltMarkup"
-                    aria-expanded="false" aria-label="Toggle navigation" style="display: block">
-                    <i class="material-icons">arrow_back_ios</i>
-                </button>
-                <a class="navbar-brand mr-auto px-3" href="#">Neighborhood App</a>
+                <form class="form-inline">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="navbar-toggler pr-1" type="button" data-bind="click: toggleSidebar" aria-controls="navbarNavAltMarkup"
+                                aria-expanded="false" aria-label="Toggle navigation" style="display: block">
+                                <i class="material-icons">arrow_back_ios</i>
+                            </button>
+                        </div>
+                        <input id="location-filter" type="text" class="form-control" placeholder="Location Name, Category"
+                            aria-label="Location Name, Category" aria-describedby="basic-addon2" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="material-icons">filter_list</i></span>
+                        </div>
+                    </div>
+                </form>
             </nav>
-            <div class="input-group">
-                <input id="location-filter" type="text" class="form-control" placeholder="Location Name, Category"
-                    aria-label="Location Name, Category" aria-describedby="basic-addon2" data-bind="value: filter, valueUpdate: 'afterkeydown'">
-                <div class="input-group-append">
-                    <span class="input-group-text"><i class="material-icons">filter_list</i></span>
-                </div>
-            </div>
+
             <hr>
             <div class="location-list">
                 <ul class="list-group" data-bind="foreach: filterLocations">

@@ -1,4 +1,4 @@
-var Location = function(data, i) {
+var Location = function (data, i) {
     var self = this;
 
     self.id = i;

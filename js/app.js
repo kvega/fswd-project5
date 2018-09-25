@@ -137,7 +137,7 @@ var ViewModel = function () {
     };
 
     // Toggle the sidebar
-    self.toggleSidebar = function() {
+    self.toggleSidebar = function () {
         if (self.isSidebarOpen()) {
             self.isSidebarOpen(false);
         } else {

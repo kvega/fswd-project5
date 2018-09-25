@@ -11,5 +11,3 @@ This app makes use of the Google Maps and Foursquare APIs to recommend severals 
 ## Usage
 
 * To use this app, download or clone this repository and open the `index.html` file in your browser of choice 
-
-* Or, you may [click here](https://kvega.github.io/fswd-project5/)

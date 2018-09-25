@@ -15,7 +15,9 @@
 
 <body>
     <div class="container-fluid p-0 m-0 h-100">
+        <!-- Start of sidebar -->
         <nav id="sidebar" data-bind="style: {left: isSidebarOpen() ? '-500px' : '0px'}">
+            <!-- Search and navigation in sidebar -->
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <form class="form-inline">
                     <div class="input-group">
@@ -25,7 +27,7 @@
                                 <i class="material-icons">arrow_back_ios</i>
                             </button>
                         </div>
-                        <input id="location-filter" type="text" class="form-control" placeholder="Location Name, Category"
+                        <input id="location-filter" type="text" class="form-control" placeholder=" Search by Name or Category"
                             aria-label="Location Name, Category" aria-describedby="basic-addon2" data-bind="value: filter, valueUpdate: 'afterkeydown'">
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="material-icons">filter_list</i></span>
@@ -33,14 +35,18 @@
                     </div>
                 </form>
             </nav>
-
+            <!-- End of search and sidebar navigation -->
             <hr>
+            <!-- List of locations -->
             <div class="location-list">
                 <ul class="list-group" data-bind="foreach: filterLocations">
                     <li class="list-group-item" data-bind="text: title, click: $parent.clickLocationInfo, event: {mouseover: $parent.mouseoverLocationInfo, mouseout: $parent.mouseoutLocationInfo}"></li>
                 </ul>
             </div>
+            <!-- End of locations -->
         </nav>
+        <!-- End of sidebar -->
+        <!-- Start of topbar -->
         <nav id="topbar" class="navbar navbar-expand-lg navbar-light bg-light">
             <button class="navbar-toggler" type="button" data-bind="click: toggleSidebar" aria-controls="navbarNavAltMarkup"
                 aria-expanded="false" aria-label="Toggle navigation" style="display: block">
@@ -48,9 +54,12 @@
             </button>
             <a class="navbar-brand mr-auto px-3" href="#">Neighborhood App</a>
         </nav>
+        <!-- End of topbar -->
+        <!-- Start of Map container -->
         <main class="container-fluid my-0 p-0">
             <div id="map"></div>
         </main>
+        <!-- End of Map container -->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
         crossorigin="anonymous"></script>

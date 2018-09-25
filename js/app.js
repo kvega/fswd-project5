@@ -197,7 +197,7 @@ function getFoursquareInfo(location) {
         client_secret: CLIENT_SECRET,
         ll: String(location.lat) + ', ' + String(location.lng),
         v: '20180323',
-        limit: 50
+        limit: 30
     }, function (result) {
         console.log("success");
         console.log(result);

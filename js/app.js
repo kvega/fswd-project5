@@ -143,7 +143,6 @@ var ViewModel = function () {
         } else {
             self.isSidebarOpen(true);
         }
-        console.log(self.isSidebarOpen());
     };
 };
 

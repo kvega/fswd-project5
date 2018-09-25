@@ -2,18 +2,23 @@
 // Map variable
 var map;
 
+// Set location to Santa Cruz, CA
 var mainLocationSC = {
     lat: 36.9741,
     lng: -122.0308
 };
+
+// Set location to New York, NY
 var mainLocationNY = {
     lat: 40.7413549,
     lng: -73.9980244
 };
 
+// Client ID and Secret for Foursquare API
 const CLIENT_ID = 'LT2XDVYLCLY13G0O1CPIJ5YEJXGG1YHV0LISYQZIGKZYZUN0';
 const CLIENT_SECRET = 'HC11QNZJOTN4CZRIT30VHGKE30VE4BVMW03TGRYZ4L0N5MMN';
 
+// Array for locations loaded by Foursquare response
 var initialLocations = [];
 
 // Create our ViewModel
@@ -27,6 +32,10 @@ var ViewModel = function () {
     self.isSidebarOpen = ko.observable();
     self.filter = ko.observable();
     self.locationList = ko.observableArray([]);
+
+    // Filters markers and list entries displayed based on search criteria
+    // Makes use of the self.filter observable to return matching results
+    // Returns a filtered list of locations
     self.filterLocations = ko.computed(function () {
         var filter = self.filter();
         var filteredList = [];
@@ -50,10 +59,12 @@ var ViewModel = function () {
         return filteredList;
     });
 
+    // For each location retrieved from Foursquare, create a Location object and add to ViewModel's list of Locations
     initialLocations.forEach(function (locationData, i) {
         self.locationList.push(new Location(locationData, i));
     });
 
+    // Function used to initialize Google Map
     self.initMap = function () {
         // Constructor for new map object
         map = new google.maps.Map(document.getElementById('map'), {
@@ -73,17 +84,20 @@ var ViewModel = function () {
                 address: location.address()
             });
 
+            // Set icon for marker
             marker.setIcon(self.defaultMarker);
 
+            // Create a new InfoWindow specific to this marker
             var infowindow = new google.maps.InfoWindow();
             marker.infowindow = infowindow;
 
+            // Populate InfoWindow
             populateInfoWindow(marker, infowindow);
 
             // Push the marker onto the markers array
             self.markers.push(marker);
 
-            // Add eventListener to each marker
+            // Add eventListeners to each marker
             marker.addListener('click', function () {
                 self.infoWindow.close();
                 self.infoWindow = this.infowindow;
@@ -100,6 +114,7 @@ var ViewModel = function () {
         };
     };
 
+    // Set action for when user clicks on location list item
     self.clickLocationInfo = function (location) {
         var marker = self.markers[location.id];
         self.infoWindow.close();
@@ -107,18 +122,21 @@ var ViewModel = function () {
         self.infoWindow.open(map, marker);
     };
 
+    // Animates marker on map when user hovers over the corresponding list entry
     self.mouseoverLocationInfo = function (location) {
         var marker = self.markers[location.id];
         marker.setIcon(makeMarkerIcon('00FF24'))
         toggleBounce(marker);
     };
 
+    // Resets animation for when user no longer hovers list entry
     self.mouseoutLocationInfo = function (location) {
         var marker = self.markers[location.id];
         marker.setIcon(makeMarkerIcon('ea4335'))
         toggleBounce(marker);
     };
 
+    // Toggle the sidebar
     self.toggleSidebar = function() {
         if (self.isSidebarOpen()) {
             self.isSidebarOpen(false);
@@ -129,6 +147,7 @@ var ViewModel = function () {
     };
 };
 
+// Animate marker
 function toggleBounce(marker) {
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
@@ -137,6 +156,7 @@ function toggleBounce(marker) {
     };
 };
 
+// Create marker icon
 function makeMarkerIcon(markerColor) {
     var googleChartsURL = 'http://chart.googleapis.com/chart?';
     var pinType = 'chst=d_map_pin_icon&';
@@ -150,6 +170,7 @@ function makeMarkerIcon(markerColor) {
     return markerImage;
 };
 
+// Set html in InfoWindow
 function populateInfoWindow(marker, infowindow) {
     if (infowindow.marker != marker) {
         infowindow.setContent('');
@@ -163,10 +184,12 @@ function populateInfoWindow(marker, infowindow) {
     }
 };
 
+// Alert user of Google Maps API error
 function googleMapsError() {
     alert("Uh oh! Looks like we encountered an error opening Google Maps. Please refresh the page and try again.");
 }
 
+// Make request to Foursquare API
 function getFoursquareInfo(location) {
     var array = [];
     $.getJSON('https://api.foursquare.com/v2/venues/explore', {
